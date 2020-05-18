@@ -1,0 +1,56 @@
+# Tensorflow 2.0 시작
+
+try:
+    %tensorflow_version 2.x
+except:
+    pass
+import tensorflow as tf
+
+
+# 간단한 시퀀셜 모델 만들기
+
+## 기본 데이터
+import numpy as np
+x = np.array([[1,1],[1,0],[0,1],[0,0]]) # 항상 이런 식으로 입력해야 함에 주의
+y = np.array([[0],[1],[1],[0]])
+
+## 모델(데이터와 shape 유지)
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(units=2, activation='sigmoid', input_shape=(2,)), # 첫 레이어의 뉴런 수는 2개 / shape에 주의
+    tf.keras.layers.Dense(units=1, activation='sigmoid') # 두번째 레이어의 뉴런 수는 1개
+])
+
+## 모델의 최적화 함수와 방법 설정
+model.compile(optimizer=tf.keras.optimizers.SGD(lr=0.1), loss='mse')
+
+## 모델 기본 폼
+model.summary()
+
+## 피팅
+history = model.fit(x, y, epoches=2000, batch_size=1)
+
+## 예측
+model.predict(x)
+
+## 가중치 확인
+for weight in model.weights:
+    print(weight)
+    
+## 손실함수 그래프 그리기
+import matplotlib.pyplot as plt
+plt.plot(history.history['loss']) # fitting 오브젝트.history / plt.plot은 따로 x축 지정 안할 시 range(len(y))으로 간주
+
+
+# 간단한 시각화
+
+## 꺾은선 그래프
+import matplotlib.pyplot as plt
+x = range(20) # [0,1,...,19]
+y = tf.random.normal([20],0,1) # 정규분포 따르는 난수 생성 / 크기,평균,표준편차
+plt.plot(x,y) # 'bo' 추가 입력 시 파란색 점 / r 빨강, y 노랑, g 초록, k 검정
+plt.show()
+
+## 간단한 히스토그램
+random_normal = tf.random.normal([10000],0,1)
+plt.hist(random_normal, bins=100) # bins는 막대의 수
+plt.show()
